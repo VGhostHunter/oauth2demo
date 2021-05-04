@@ -8,18 +8,21 @@ zuul:
   #客户端发过来的 http头 不往后转发 设置成空 就是所有的 header都向后转发
   #zuul.sensitiveHeaders设置为空，代表不过滤任何Header信息，Header会向下转发
   sensitive-headers:
+  #一般不会再网关做特别细粒度的限流，一是因为不应该在网关出现和业务相关的代码，而是因为网关没法限制服务间的流量
+  #一般网关只是对硬件设备的处理能力进行限流
   ratelimit:
-    enabled: false
+    enabled: true
     # 生产环境应使用 redis
     repository: jpa
     defaultPolicyList:
       # 时间窗口内最多有几个请求
       - limit: 2
-        # 这些请求加在一起消耗的时间是多少
+        # 这些请求加在一起消耗的时间不能超过1s
         quota: 1
         # 时间窗口 5s
-        refresh-interval: 15
-        type:
+        refresh-interval: 1
+        #这里type还可以使用 user， role等 但是一般不会在网关层面做，因为这些都涉及到业务
+        type: #限流方式 多个组合使用 /a/post /a/get
           - url
           - httpmethod
     policyList:
@@ -28,11 +31,13 @@ zuul:
       - limit: 2 #可选 - 每个刷新时间窗口对应的请求数量限制
         quota: 1 #可选-  每个刷新时间窗口对应的请求时间限制（秒）
         refresh-interval: 3 # 刷新时间窗口的时间，默认值 (秒)
-        type: #可选 限流方式
+        type: #可选 限流方式 多个组合使用 /a/post/ip /a/get/ip
           - url
           - httpmethod
-          - origin
+          - origin #根据客户端ip
 spring:
+  application:
+    name: gateway
   datasource:
     url: jdbc:mysql://localhost:3306/oauth2demo?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
