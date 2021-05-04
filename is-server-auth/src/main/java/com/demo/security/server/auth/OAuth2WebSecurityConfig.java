@@ -1,4 +1,4 @@
-package com.demo.security.isserverauth.server.auth;
+package com.demo.security.server.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

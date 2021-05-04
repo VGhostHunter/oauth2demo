@@ -1,4 +1,4 @@
-package com.demo.security.isorderapi.server.resource;
+package com.demo.security.server.resource;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -7,15 +7,14 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
+/**
+ * 配置资源服务器
+ * @author vghosthunter
+ */
 @Configuration
 @EnableResourceServer
 public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    /**
-     * 资源的 id  就是出现在配置 token 可以访问的资源id那里的id
-     * @param resources
-     * @throws Exception
-     */
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources.resourceId("order-service");
@@ -25,6 +24,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST).access("#oauth2.hasScope('write')")
-                .antMatchers(HttpMethod.GET).access("#oauth2.hasScope('read')");
+                .antMatchers(HttpMethod.GET).access("#oauth2.hasScope('read')")
+                .anyRequest().authenticated();
     }
 }

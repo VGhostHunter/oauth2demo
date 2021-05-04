@@ -1,4 +1,4 @@
-package com.demo.security.ispriceapi.price;
+package com.demo.security.price;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

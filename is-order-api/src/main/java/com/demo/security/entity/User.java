@@ -1,4 +1,4 @@
-package com.demo.security.isorderapi.server.resource;
+package com.demo.security.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -6,15 +6,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+/**
+ * @author vghosthunter
+ */
 public class User implements UserDetails {
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    private Long id;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private String username;
+
+    private String password;
 
     public Long getId() {
         return id;
@@ -24,12 +25,13 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    private Long id;
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    private String username;
-
-    private String password;
-
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

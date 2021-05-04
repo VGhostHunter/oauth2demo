@@ -1,4 +1,4 @@
-package com.demo.security.isorderapi;
+package com.demo.security;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

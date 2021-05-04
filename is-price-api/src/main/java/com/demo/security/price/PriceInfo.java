@@ -1,4 +1,4 @@
-package com.demo.security.ispriceapi.price;
+package com.demo.security.price;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package com.demo.security.isserverauth.server.auth;
+package com.demo.security.server.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import javax.sql.DataSource;
 
@@ -23,8 +24,8 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private DataSource dataSource;
@@ -35,6 +36,7 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
      */
     @Bean
     public TokenStore tokenStore() {
+//        return new RedisTokenStore()
         return new JdbcTokenStore(dataSource);
     }
 
@@ -55,24 +57,23 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
      * @param clients
      * @throws Exception
      */
-//    @Override
-//    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-//        clients.inMemory()
-//                .withClient("orderApp")
-//                .secret(passwordEncoder.encode("123456"))
-//                .scopes("read", "write")
-//                .accessTokenValiditySeconds(3600)
-//                .resourceIds("order-service")
-//                .authorizedGrantTypes("password")
-//                .and()
-//                .withClient("orderService")
-//                .secret(passwordEncoder.encode("123456"))
-//                .scopes("read")
-//                .accessTokenValiditySeconds(3600)
-//                .resourceIds("order-service")
-//                .authorizedGrantTypes("password");
-//
-//    }
+    /*@Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.inMemory()
+                .withClient("orderApp")
+                .secret(passwordEncoder.encode("123456"))
+                .scopes("read", "write")
+                .accessTokenValiditySeconds(3600)
+                .resourceIds("order-service")
+                .authorizedGrantTypes("password")
+                .and()
+                .withClient("orderService")
+                .secret(passwordEncoder.encode("123456"))
+                .scopes("read")
+                .accessTokenValiditySeconds(3600)
+                .resourceIds("order-service")
+                .authorizedGrantTypes("password");
+    }*/
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
