@@ -2,9 +2,9 @@ zuul:
   routes:
     #这里没有使用服务发现组件，所以将服务服务地址写死
     token:
-      url: http://localhost:9090
+      url: http://auth.demo.com:9090
     order:
-      url: http://localhost:9080
+      url: http://order.demo.com:9080
   #客户端发过来的 http头 不往后转发 设置成空 就是所有的 header都向后转发
   #zuul.sensitiveHeaders设置为空，代表不过滤任何Header信息，Header会向下转发
   sensitive-headers:
@@ -13,7 +13,7 @@ zuul:
   ratelimit:
     enabled: true
     # 生产环境应使用 redis
-    repository: jpa
+    repository: redis
     defaultPolicyList:
       # 时间窗口内最多有几个请求
       - limit: 2
@@ -38,16 +38,19 @@ zuul:
 spring:
   application:
     name: gateway
-  datasource:
-    url: jdbc:mysql://localhost:3306/oauth2demo?useUnicode=true&characterEncoding=utf8&useSSL=false
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    show-sql: true
-    database-platform: org.hibernate.dialect.MySQLDialect
-    hibernate:
-      ddl-auto: update
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/oauth2demo?useUnicode=true&characterEncoding=utf8&useSSL=false
+#    username: root
+#    password: 123456
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  jpa:
+#    show-sql: false
+#    database-platform: org.hibernate.dialect.MySQLDialect
+#    hibernate:
+#      ddl-auto: update
+  redis:
+    host: localhost
+    port: 6379
 
 server:
   port: 9070

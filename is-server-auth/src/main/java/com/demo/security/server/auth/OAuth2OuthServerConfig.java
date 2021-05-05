@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -25,8 +27,8 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
     @Autowired
     private AuthenticationManager authenticationManager;
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private DataSource dataSource;
@@ -47,8 +49,11 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
+                //当使用refresh token的时候是没有密码的 需要获取用户信息只能去查
+                .userDetailsService(userDetailsService)
                 //告诉服务器 用这个tokenStore来存储token
                 .tokenStore(tokenStore())
+                //authenticationManager 配置了userDetailsService 可以支持oauth的4中认证
                 .authenticationManager(authenticationManager);
     }
 

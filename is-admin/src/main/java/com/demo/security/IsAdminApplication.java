@@ -44,7 +44,7 @@ public class IsAdminApplication {
         HttpEntity<MultiValueMap> entity = new HttpEntity<>(paramMap, headers);
 
         ResponseEntity<TokenInfo> response = restTemplate.exchange(oauthServiceUrl, HttpMethod.POST, entity, TokenInfo.class);
-        request.getSession().setAttribute("token", response.getBody());
+        request.getSession().setAttribute("token", response.getBody().init());
 
         //这里应该根据state进行跳转
         servletResponse.sendRedirect("/");

@@ -76,7 +76,7 @@ public class OAuthFilter extends ZuulFilter {
 
     private TokenInfo getTokenInfo(String authHeader) {
         String token = StringUtils.substringAfter(authHeader, "bearer ");
-        String oauthServiceUrl = "http://localhost:9090/oauth/check_token";
+        String oauthServiceUrl = "http://auth.demo.com:9090/oauth/check_token";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
