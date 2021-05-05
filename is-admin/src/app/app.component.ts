@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
+import {CookieService} from "ngx-cookie-service";
+
 
 @Component({
   selector: 'app-root',
@@ -12,8 +14,8 @@ export class AppComponent {
   credentials = {username: 'xixi', password: '123456'}
   order = {}
 
-  constructor(private http: HttpClient) {
-    this.http.get("me").subscribe(data => {
+  constructor(private http: HttpClient, private cookieService: CookieService) {
+    this.http.get("api/user/me").subscribe(data => {
       if(data) {
         this.authenticated = true;
       }
@@ -45,6 +47,8 @@ export class AppComponent {
   }
 
   logout() {
+    this.cookieService.delete('demo_access_token', "/", "demo.com")
+    this.cookieService.delete('demo_refresh_token', "/", "demo.com")
     this.http.post('logout', null).subscribe(() => {
       window.location.href = "http://auth.demo.com:9090/logout?redirect_uri=http://admin.demo.com:8080"
     }, () => {

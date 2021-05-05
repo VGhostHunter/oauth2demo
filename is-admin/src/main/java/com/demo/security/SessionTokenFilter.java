@@ -57,6 +57,7 @@ public class SessionTokenFilter extends ZuulFilter {
                     request.getSession().setAttribute("token", newToken.getBody().init());
                     token = newToken.getBody().getAccess_token();
                 } catch (Exception e) {
+                    request.getSession().invalidate();
                     requestContext.setSendZuulResponse(false);
                     requestContext.setResponseStatusCode(500);
                     requestContext.setResponseBody("{\"message\":\"refresh fail\"}");

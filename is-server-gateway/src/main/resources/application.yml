@@ -1,6 +1,8 @@
 zuul:
   routes:
     #这里没有使用服务发现组件，所以将服务服务地址写死
+    user:
+      url: http://auth.demo.com:9090
     token:
       url: http://auth.demo.com:9090
     order:
@@ -16,7 +18,7 @@ zuul:
     repository: redis
     defaultPolicyList:
       # 时间窗口内最多有几个请求
-      - limit: 2
+      - limit: 15
         # 这些请求加在一起消耗的时间不能超过1s
         quota: 1
         # 时间窗口 5s
@@ -28,7 +30,7 @@ zuul:
     policyList:
       # 配置以token开头的请求
       token:
-      - limit: 2 #可选 - 每个刷新时间窗口对应的请求数量限制
+      - limit: 20 #可选 - 每个刷新时间窗口对应的请求数量限制
         quota: 1 #可选-  每个刷新时间窗口对应的请求时间限制（秒）
         refresh-interval: 3 # 刷新时间窗口的时间，默认值 (秒)
         type: #可选 限流方式 多个组合使用 /a/post/ip /a/get/ip

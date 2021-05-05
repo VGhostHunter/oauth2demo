@@ -9,7 +9,8 @@
     "@angular/platform-browser-dynamic": "^11.2.11",
     "@angular/router": "^11.2.11",
     "bootstrap": "^3.4.1",
-    "jquery": "^3.6.0"
+    "jquery": "^3.6.0",
+    "ngx-cookie-service": "^11.0.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.1102.11"

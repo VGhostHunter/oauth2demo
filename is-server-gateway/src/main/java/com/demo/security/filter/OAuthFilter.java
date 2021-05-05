@@ -67,6 +67,8 @@ public class OAuthFilter extends ZuulFilter {
         try {
             TokenInfo info = getTokenInfo(authHeader);
             request.setAttribute("tokenInfo", info);
+            //这样 resource server 就能从header里面拿到 username
+            requestContext.addZuulRequestHeader("username", info.getUser_name());
         } catch (Exception e) {
             logger.error("get token Info fail{}", e.getMessage());
         }

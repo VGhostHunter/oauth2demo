@@ -11,6 +11,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -44,7 +45,23 @@ public class IsAdminApplication {
         HttpEntity<MultiValueMap> entity = new HttpEntity<>(paramMap, headers);
 
         ResponseEntity<TokenInfo> response = restTemplate.exchange(oauthServiceUrl, HttpMethod.POST, entity, TokenInfo.class);
-        request.getSession().setAttribute("token", response.getBody().init());
+
+        //Use session
+        //request.getSession().setAttribute("token", response.getBody().init());
+
+
+        //Use token
+        Cookie accessTokenCookie = new Cookie("demo_access_token", response.getBody().getAccess_token());
+        accessTokenCookie.setMaxAge(response.getBody().getExpires_in().intValue());
+        accessTokenCookie.setDomain("demo.com");
+        accessTokenCookie.setPath("/");
+        servletResponse.addCookie(accessTokenCookie);
+
+        Cookie refreshTokenCookie = new Cookie("demo_refresh_token", response.getBody().getRefresh_token());
+        refreshTokenCookie.setMaxAge(2592000);
+        refreshTokenCookie.setDomain("demo.com");
+        refreshTokenCookie.setPath("/");
+        servletResponse.addCookie(refreshTokenCookie);
 
         //这里应该根据state进行跳转
         servletResponse.sendRedirect("/");
@@ -55,8 +72,4 @@ public class IsAdminApplication {
         request.getSession().invalidate();
     }
 
-    @GetMapping("/me")
-    public TokenInfo me(HttpServletRequest request) {
-        return (TokenInfo) request.getSession().getAttribute("token");
-    }
 }

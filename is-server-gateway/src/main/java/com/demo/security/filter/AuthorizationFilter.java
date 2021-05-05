@@ -24,12 +24,13 @@ public class AuthorizationFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 3;
+        return 4;
     }
 
     @Override
     public boolean shouldFilter() {
-        return true;
+        RequestContext ctx = RequestContext.getCurrentContext();
+        return ctx.sendZuulResponse();
     }
 
     @Override
@@ -46,10 +47,6 @@ public class AuthorizationFilter extends ZuulFilter {
                 if(!hasPermission(tokenInfo, request)) {
                     handleError(HttpStatus.FORBIDDEN, requestContext);
                 }
-
-                //这样 resource server 就能从header里面拿到 username
-                requestContext.addZuulRequestHeader("username", tokenInfo.getUser_name());
-
             } else {
                 handleError(HttpStatus.UNAUTHORIZED, requestContext);
             }

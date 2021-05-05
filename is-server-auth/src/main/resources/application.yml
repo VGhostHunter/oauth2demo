@@ -11,7 +11,12 @@ spring:
     port: 6379
   session:
     #If a duration suffix is not specified, seconds is used.
-    timeout: 3600
+    #这里Session的过期时间设置要看客户端的认证方式
+    #1.如果客户端的使用session做sso 那么这个session的过期时间应该设置的长一点
+    #  这样客户端的session过期了 仍然可以来这里登录
+    #2.如果客户端使用token 那么这个session的过期时间就短一点无所谓
+    #  因为即使session过期了 仍然可以使用客户端的refresh_token刷新token
+    timeout: 1800
     redis:
       # Namespace for keys used to store sessions.
       namespace: "spring:oauthsession"
