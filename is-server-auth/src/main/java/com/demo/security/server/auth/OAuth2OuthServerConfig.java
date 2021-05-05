@@ -3,6 +3,7 @@ package com.demo.security.server.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import javax.sql.DataSource;
@@ -42,8 +46,21 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
      */
     @Bean
     public TokenStore tokenStore() {
-        return new RedisTokenStore(redisConnectionFactory);
+        return new JwtTokenStore(tokenConverter());
+//        return new RedisTokenStore(redisConnectionFactory);
 //        return new JdbcTokenStore(dataSource);
+    }
+
+    /**
+     * TokenKeyEndpoint 需要此tokenConverter
+     * @return
+     */
+    @Bean
+    public JwtAccessTokenConverter tokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("demo.key"), "123456".toCharArray());
+        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("demo"));
+        return converter;
     }
 
     @Override
@@ -53,6 +70,7 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
                 .userDetailsService(userDetailsService)
                 //告诉服务器 用这个tokenStore来存储token
                 .tokenStore(tokenStore())
+                .tokenEnhancer(tokenConverter())
                 //authenticationManager 配置了userDetailsService 可以支持oauth的4中认证
                 .authenticationManager(authenticationManager);
     }
@@ -97,8 +115,9 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
      */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        //必须经过身份认证才可以来验 token
-        //随便拿一个 token 来是不会验证的
-        security.checkTokenAccess("isAuthenticated()");
+        //只有经过认证的服务才能拿到token key 也就是sign key 拿到sign key去验签名
+        security.tokenKeyAccess("isAuthenticated()")
+                //必须经过身份认证才可以来验 token
+                .checkTokenAccess("isAuthenticated()");
     }
 }

@@ -1,0 +1,27 @@
+package com.demo.security.config;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Component
+public class GatewayAccessDeniedHandler extends OAuth2AccessDeniedHandler {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException authException) throws IOException, ServletException {
+        String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        logger.info("Update AuditLog 403 for {}", user);
+        request.setAttribute("logEnd", "yes");
+        super.handle(request, response, authException);
+    }
+}

@@ -1,2 +1,16 @@
+spring:
+  application:
+    name: priceServer
+
 server:
   port: 9060
+
+security:
+  oauth2:
+    client:
+      client-id: priceServer
+      client-secret: 123456
+    resource:
+      jwt:
+        #TokenKeyEndpoint.class
+        key-uri: http://auth.demo.com:9090/oauth/token_key

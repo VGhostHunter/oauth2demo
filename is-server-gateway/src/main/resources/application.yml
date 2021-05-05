@@ -1,3 +1,23 @@
+spring:
+  application:
+    name: gateway
+  redis:
+    host: localhost
+    port: 6379
+
+server:
+  port: 9070
+
+security:
+  oauth2:
+    client:
+      client-id: gateway
+      client-secret: 123456
+    resource:
+      jwt:
+        #TokenKeyEndpoint.class
+        key-uri: http://auth.demo.com:9090/oauth/token_key
+
 zuul:
   routes:
     #这里没有使用服务发现组件，所以将服务服务地址写死
@@ -18,7 +38,7 @@ zuul:
     repository: redis
     defaultPolicyList:
       # 时间窗口内最多有几个请求
-      - limit: 15
+      - limit: 2
         # 这些请求加在一起消耗的时间不能超过1s
         quota: 1
         # 时间窗口 5s
@@ -37,22 +57,3 @@ zuul:
           - url
           - httpmethod
           - origin #根据客户端ip
-spring:
-  application:
-    name: gateway
-#  datasource:
-#    url: jdbc:mysql://localhost:3306/oauth2demo?useUnicode=true&characterEncoding=utf8&useSSL=false
-#    username: root
-#    password: 123456
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#  jpa:
-#    show-sql: false
-#    database-platform: org.hibernate.dialect.MySQLDialect
-#    hibernate:
-#      ddl-auto: update
-  redis:
-    host: localhost
-    port: 6379
-
-server:
-  port: 9070

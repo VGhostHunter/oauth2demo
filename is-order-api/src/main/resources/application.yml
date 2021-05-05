@@ -1,2 +1,16 @@
+spring:
+  application:
+    name: orderServer
+
 server:
   port: 9080
+
+security:
+  oauth2:
+    client:
+      client-id: orderServer
+      client-secret: 123456
+    resource:
+      jwt:
+        #TokenKeyEndpoint.class
+        key-uri: http://auth.demo.com:9090/oauth/token_key
