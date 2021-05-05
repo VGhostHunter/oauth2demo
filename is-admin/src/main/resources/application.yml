@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: admin
+zuul:
+  routes:
+    api:
+      url: http://gateway.demo.com:9070
+  sensitive-headers:
