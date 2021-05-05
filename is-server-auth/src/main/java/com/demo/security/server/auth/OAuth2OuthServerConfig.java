@@ -3,6 +3,7 @@ package com.demo.security.server.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,14 +31,17 @@ public class OAuth2OuthServerConfig extends AuthorizationServerConfigurerAdapter
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
+
     /**
      * 用来存储 token的 默认的实现就是内存中的实现
      * @return
      */
     @Bean
     public TokenStore tokenStore() {
-//        return new RedisTokenStore()
-        return new JdbcTokenStore(dataSource);
+        return new RedisTokenStore(redisConnectionFactory);
+//        return new JdbcTokenStore(dataSource);
     }
 
     @Override

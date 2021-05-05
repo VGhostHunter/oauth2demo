@@ -5,13 +5,21 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     networks:
-      - outh2demo
+      - oauth2demo
     environment:
       MYSQL_ROOT_PASSWORD: 123456
     ports:
       - '3306:3306'
     restart: always
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', '--sort_buffer_size=8M']
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - oauth2demo
 
 volumes:
   mysql:
